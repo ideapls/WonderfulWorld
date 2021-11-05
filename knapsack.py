@@ -77,6 +77,29 @@ class KnapsackSolver:
     def sort_population(self, population):
         return [i[1] for i in sorted([(self.fitness(j), j) for j in population])]
 
+    def solve(self, population, number_generations):
+        elite = self.sort_population(population)[(len(population) - self.elite_size):]
+        print('Elite inicial:\n')
+        for i in elite:
+            print('Indivíduo: {} | Valor: {} | Peso: {}\n'.format(
+                i, self.fitness(i), self.calculate_load(i)))
+        print('Realizando o crossover e mutação para {} gerações...\n'.format(
+            number_generations))
+        generations = []
+        generation_fitness = []
+        for i in range(number_generations):
+            generations.append(i + 1)
+            generation_fitness.append(
+                self.fitness(self.sort_population(population)[self.population_size - 1]))
+            population = self.selection_and_crossover(population)
+            population = self.mutation(population)
+        print('Elite final:\n')
+        elite = self.sort_population(population)[(len(population) - self.elite_size):]
+        for i in elite:
+            print('Indivíduo: {} | Valor: {} | Peso: {}\n'.format(
+                i, self.fitness(i), self.calculate_load(i)))
+        return generations, generation_fitness
+
     def infos(self):
         print('-' * 45)
         print('Algoritmo da Mochila')
